@@ -23,6 +23,7 @@ def construct_dataset(output_path="null"):
         instance = [train_data[lineno].strip(), int(emoji_map[emoji_name])]
         dataset.append(instance)
 
+    #write the dataset into disk file
     if output_path != "null":
         output_file = open(output_path, "w", encoding="utf-8")
         for instance in dataset:
