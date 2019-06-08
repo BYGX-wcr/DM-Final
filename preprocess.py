@@ -1,10 +1,9 @@
 import jieba
-import jieba.posseg as posseg
 
 def load_raw_data(output_path=None):
-    data_file = open("./dataset/train.data", encoding="utf-8")
-    label_file = open("./dataset/train.solution", encoding="utf-8")
-    emoji_file = open("./dataset/emoji.data", encoding="utf-8")
+    data_file = open("./dataset/train.data", encoding="utf-8-sig")
+    label_file = open("./dataset/train.solution", encoding="utf-8-sig")
+    emoji_file = open("./dataset/emoji.data", encoding="utf-8-sig")
 
     train_data = data_file.readlines()
     train_label = label_file.readlines()
@@ -52,7 +51,7 @@ def class_statistic(dataset, class_num):
 def seg_words(dataset, output_path=None):
     new_dataset = []
     for instance in dataset:
-        words = posseg.cut(instance[0])
+        words = jieba.cut(instance[0])
         new_instance = [words, instance[1]]
         new_dataset.append(new_instance)
 
