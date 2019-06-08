@@ -1,5 +1,4 @@
 import jieba
-import jieba.posseg as posseg
 
 def load_raw_data(output_path=None):
     data_file = open("./dataset/train.data", encoding="utf-8")
@@ -52,7 +51,7 @@ def class_statistic(dataset, class_num):
 def seg_words(dataset, output_path=None):
     new_dataset = []
     for instance in dataset:
-        words = posseg.cut(instance[0])
+        words = jieba.cut(instance[0])
         new_instance = [words, instance[1]]
         new_dataset.append(new_instance)
 
