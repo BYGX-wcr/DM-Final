@@ -1,5 +1,7 @@
+import jieba
+import jieba.posseg as posseg
 
-def load_raw_data(output_path="null"):
+def load_raw_data(output_path=None):
     data_file = open("./dataset/train.data", encoding="utf-8")
     label_file = open("./dataset/train.solution", encoding="utf-8")
     emoji_file = open("./dataset/emoji.data", encoding="utf-8")
@@ -24,7 +26,7 @@ def load_raw_data(output_path="null"):
         dataset.append(instance)
 
     #write the dataset into disk file
-    if output_path != "null":
+    if output_path != None:
         output_file = open(output_path, "w", encoding="utf-8")
         for instance in dataset:
             output_file.write(str(instance[1]) + " " + instance[0] + "\n")
@@ -47,10 +49,30 @@ def class_statistic(dataset, class_num):
 
     return counters
 
+def seg_words(dataset, output_path=None):
+    new_dataset = []
+    for instance in dataset:
+        words = posseg.cut(instance[0])
+        new_instance = [words, instance[1]]
+        new_dataset.append(new_instance)
+
+    #write the new dataset into disk file
+    if output_path != None:
+        output_file = open(output_path, "w", encoding="utf-8")
+        for new_instance in new_dataset:
+            #output the label
+            output_file.write(str(new_instance[1]) + " ")
+
+            #output the words
+            for word in new_instance[0]:
+                output_file.write(str(word) + " ")
+            output_file.write("\n")
+        
+        output_file.close()
+
+    return new_dataset
+
 if __name__ == "__main__":
     dataset, class_num = load_raw_data()
 
-    class_data = class_statistic(dataset, class_num)
-    for key in range(class_num):
-        val = class_data[key]
-        print("{0}:{1}".format(key, val))
+    seg_words(dataset, "./dataset/segmented_train.dataset")
