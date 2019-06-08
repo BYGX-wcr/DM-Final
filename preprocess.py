@@ -36,7 +36,7 @@ def load_raw_data(output_path=None):
     label_file.close()
     emoji_file.close()
     return dataset, len(emoji_map.keys())
-    
+
 def class_statistic(dataset, class_num):
     counters = {}
     for i in range(class_num):
@@ -47,6 +47,18 @@ def class_statistic(dataset, class_num):
         counters[instance[1]] = counters[instance[1]] + 1
 
     return counters
+
+def eliminate_noise(dataset, noise_set):
+    new_dataset = []
+    for instance in dataset:
+        sentence = str(instance[0])
+        for char in noise_set:
+            sentence = sentence.strip(char)
+        
+        new_instance = [sentence, instance[1]]
+        new_dataset.append(new_instance)
+    
+    return new_dataset
 
 def seg_words(dataset, output_path=None):
     new_dataset = []
@@ -73,5 +85,7 @@ def seg_words(dataset, output_path=None):
 
 if __name__ == "__main__":
     dataset, class_num = load_raw_data()
+
+    dataset = eliminate_noise(dataset, "£¬¡£\t ")
 
     seg_words(dataset, "./dataset/segmented_train.dataset")
