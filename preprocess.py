@@ -1,5 +1,5 @@
 
-def construct_dataset(output_path="null"):
+def load_raw_data(output_path="null"):
     data_file = open("./dataset/train.data", encoding="utf-8")
     label_file = open("./dataset/train.solution", encoding="utf-8")
     emoji_file = open("./dataset/emoji.data", encoding="utf-8")
@@ -48,7 +48,7 @@ def class_statistic(dataset, class_num):
     return counters
 
 if __name__ == "__main__":
-    dataset, class_num = construct_dataset()
+    dataset, class_num = load_raw_data()
 
     class_data = class_statistic(dataset, class_num)
     for key in range(class_num):
