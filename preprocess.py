@@ -97,23 +97,19 @@ def word_to_vec(seg_dataset, input_path):
     # load the model
     model = Word2Vec.load(input_path)
 
-    #compute the max length of each sentence
-    max_len = 0
-    for sentence in seg_dataset:
-        if len(sentence) > max_len:
-            max_len = len(sentence)
-
     #construct new dataset
     new_dataset = []
-    for i in range(len(seg_dataset)):
+    for sentence in seg_dataset:
         #construct the word vectors for a sentence, supplement missing tails
-        word_vecs = []
-        for word in seg_dataset[i]:
-            word_vecs.append(model.wv[word])
-        for j in range(len(seg_dataset[i]), max_len):
-            word_vecs.append(np.array([0] * 100))
+        word_vec = np.zeros((100))
+        counter = 0
+        for word in sentence:
+            word_vec = word_vec + model.wv[word]
+            counter = counter + 1
 
-        new_dataset.append(word_vecs)
+        for x in np.nditer(word_vec, op_flags=['readwrite']):
+            x[...] = x / counter
+        new_dataset.append(word_vec)
 
     return new_dataset
 
