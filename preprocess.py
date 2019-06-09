@@ -1,4 +1,11 @@
 import jieba
+from gensim.models import Word2Vec
+import numpy as np
+
+'''
+The python script used to load and preprocess dataset
+All dataset will be stored as list([sentence, label]) and output as list([label, sentence])
+'''
 
 def load_raw_data(output_path=None):
     data_file = open("./dataset/train.data", encoding="utf-8-sig")
@@ -83,9 +90,47 @@ def seg_words(dataset, output_path=None):
 
     return new_dataset
 
+def word_to_vec(seg_dataset, input_path=None, output_path=None):
+    seg_sentences = []
+    for instance in seg_dataset:
+        seg_sentences.append(instance[0])
+
+    # load or train the model
+    if input_path == None:
+        model = Word2Vec(seg_sentences, workers=4, window=4, size=100, sg=0, hs=1)
+    else:
+        model = Word2Vec.load(input_path)
+
+    # check whether to save the model
+    if output_path != None:
+        model.save(output_path)
+
+    #compute the max length of each sentence
+    max_len = 0
+    for sentence in seg_sentences:
+        if len(sentence) > max_len:
+            max_len = len(sentence)
+
+    #construct new dataset
+    new_dataset = []
+    for i in range(seg_sentences):
+        #construct the word vectors for a sentence, supplement missing tails
+        word_vecs = []
+        for word in seg_sentences[i]:
+            word_vecs.append(model.wv[word])
+        for j in range(len(seg_sentences), max_len):
+            word_vec.append(np.array([0] * 100))
+
+        new_instance = [word_vecs, seg_dataset[i][1]]
+        new_dataset.append(new_instance)
+
+    return new_dataset
+
 if __name__ == "__main__":
     dataset, class_num = load_raw_data()
 
-    dataset = eliminate_noise(dataset, "£¬¡£\t ")
+    dataset = eliminate_noise(dataset, "£¬¡£\t ¡°¡±£»")
 
-    seg_words(dataset, "./dataset/segmented_train.dataset")
+    seg_dataset = seg_words(dataset)
+
+    vec_dataset = word_to_vec(seg_dataset, output_path="./dataset/word2vec.model")
