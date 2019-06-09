@@ -42,4 +42,4 @@ if __name__ == "__main__":
     train_labels = labels[0:700000]
     predict_labels = labels[700000:]
 
-    res = experiment(train_dataset, predict_dataset, train_labels, predict_labels)
+    res = experiment(train_dataset, predict_dataset, train_labels, predict_labels, model_file="./dataset/word2vec.model")
