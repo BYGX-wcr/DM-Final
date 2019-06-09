@@ -1,3 +1,5 @@
+# -*- coding:utf-8 -*-
+
 from sklearn.svm import LinearSVC
 import numpy as np
 

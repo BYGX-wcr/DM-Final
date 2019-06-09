@@ -1,3 +1,5 @@
+# -*- coding:utf-8 -*-
+
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
