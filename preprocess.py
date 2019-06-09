@@ -72,7 +72,7 @@ def eliminate_noise(dataset, noise_set):
 def seg_words(dataset, output_path=None):
     new_dataset = []
     for instance in dataset:
-        words = jieba.cut(instance[0])
+        words = list(jieba.cut(instance[0]))
         new_instance = [words, instance[1]]
         new_dataset.append(new_instance)
 
