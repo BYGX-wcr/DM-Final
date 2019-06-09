@@ -119,5 +119,5 @@ if __name__ == "__main__":
 
     seg_dataset = seg_words(total_dataset)
 
-    train_word2vec_model(seg_dataset, output_path="./dataset/word2vec.model")
-    vec_dataset = word_to_vec(seg_dataset, input_path="./dataset/word2vec.model")
+    train_word2vec_model(seg_dataset, output_path="./dataset/all_word2vec.model")
+    #vec_dataset = word_to_vec(seg_dataset, input_path="./dataset/word2vec.model")

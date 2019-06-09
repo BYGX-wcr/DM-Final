@@ -26,8 +26,8 @@ def experiment(train_dataset, test_dataset, train_labels, test_labels=None, mode
         model_file = "./dataset/word2vec.model"
     vec_dataset = prep.word_to_vec(seg_dataset, input_path=model_file)
 
-    vec_train_dataset = vec_dataset[0:len(test_dataset)]
-    vec_test_dataset = vec_dataset[len(test_dataset):]
+    vec_train_dataset = vec_dataset[0:len(train_dataset)]
+    vec_test_dataset = vec_dataset[len(train_dataset):]
 
     MulNB_model = train_MulNB(vec_train_dataset, train_labels)
     res = predict_MulNB(vec_test_dataset, MulNB_model)
@@ -44,4 +44,4 @@ if __name__ == "__main__":
     train_labels = labels[0:700000]
     predict_labels = labels[700000:]
 
-    res = experiment(train_dataset, predict_dataset, train_labels, predict_labels)
+    res = experiment(train_dataset, predict_dataset, train_labels, predict_labels, model_file="./dataset/word2vec.model")
