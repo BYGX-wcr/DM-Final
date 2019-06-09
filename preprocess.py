@@ -1,3 +1,5 @@
+# -*- coding:utf-8 -*-
+
 import jieba
 from gensim.models import Word2Vec
 import numpy as np
@@ -129,7 +131,7 @@ def word_to_vec(seg_dataset, input_path=None, output_path=None):
 if __name__ == "__main__":
     dataset, class_num = load_raw_data()
 
-    dataset = eliminate_noise(dataset, "£¬¡£\t ¡°¡±£»")
+    dataset = eliminate_noise(dataset, "ï¼Œã€‚\t  â€œâ€ï¼›")
 
     seg_dataset = seg_words(dataset)
 
