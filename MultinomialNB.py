@@ -42,4 +42,8 @@ if __name__ == "__main__":
     train_labels = labels[0:700000]
     predict_labels = labels[700000:]
 
+    del dataset
+    del labels
+    del test_dataset
+
     res = experiment(train_dataset, predict_dataset, train_labels, predict_labels)
