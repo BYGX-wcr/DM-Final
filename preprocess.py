@@ -72,10 +72,9 @@ def eliminate_noise(dataset, noise_set):
     new_dataset = []
     for sentence in dataset:
         for char in noise_set:
-            sentence = sentence.strip(char)
+            sentence = sentence.replace(char, "")
         
-        new_sentence = sentence
-        new_dataset.append(new_sentence)
+        new_dataset.append(sentence)
     
     return new_dataset
 
@@ -83,8 +82,7 @@ def seg_words(dataset, output_path=None):
     new_dataset = []
     for instance in dataset:
         words = list(jieba.cut(instance))
-        new_instance = words
-        new_dataset.append(new_instance)
+        new_dataset.append(words)
 
     return new_dataset
 
@@ -107,8 +105,9 @@ def word_to_vec(seg_dataset, input_path):
             word_vec = word_vec + model.wv[word]
             counter = counter + 1
 
-        for x in np.nditer(word_vec, op_flags=['readwrite']):
-            x[...] = x / counter
+        if counter != 0: #compute average value
+            for x in np.nditer(word_vec, op_flags=['readwrite']):
+                x[...] = x / counter
         new_dataset.append(word_vec)
 
     return new_dataset
@@ -116,7 +115,7 @@ def word_to_vec(seg_dataset, input_path):
 if __name__ == "__main__":
     dataset, labels, test_dataset, class_num = load_raw_data()
 
-    total_dataset = eliminate_noise(dataset + test_dataset, "，。\t  “”；")
+    total_dataset = eliminate_noise(dataset + test_dataset, "，。\t “”；")
 
     seg_dataset = seg_words(total_dataset)
 
