@@ -99,7 +99,7 @@ def word_to_vec(seg_dataset, input_path=None, output_path=None):
 
     # load or train the model
     if input_path == None:
-        model = Word2Vec(seg_sentences, workers=4, window=4, size=100, sg=0, hs=1)
+        model = Word2Vec(seg_sentences, workers=4, window=4, size=100, min_count=0, sg=0, hs=0)
     else:
         model = Word2Vec.load(input_path)
 
@@ -115,7 +115,7 @@ def word_to_vec(seg_dataset, input_path=None, output_path=None):
 
     #construct new dataset
     new_dataset = []
-    for i in range(seg_sentences):
+    for i in range(len(seg_sentences)):
         #construct the word vectors for a sentence, supplement missing tails
         word_vecs = []
         for word in seg_sentences[i]:
