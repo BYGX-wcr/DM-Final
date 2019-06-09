@@ -19,7 +19,7 @@ def score_MulNB(data, labels, model):
 
 def experiment(train_dataset, test_dataset, train_labels, test_labels=None, model_file=None):
     total_dataset = train_dataset + test_dataset
-    total_dataset = prep.eliminate_noise(total_dataset, "，。\t  “”；")
+    total_dataset = prep.eliminate_noise(total_dataset, "，。\t “”；")
     seg_dataset = prep.seg_words(total_dataset)
     if model_file == None:
         prep.train_word2vec_model(seg_dataset, output_path="./dataset/word2vec.model")
