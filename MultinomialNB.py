@@ -15,11 +15,14 @@ def predict_MulNB(data, model):
 def score_MulNB(data, labels, model):
     return model.score(data, labels)
 
-def experiment(train_dataset, test_dataset, train_labels, test_labels=None):
+def experiment(train_dataset, test_dataset, train_labels, test_labels=None, model_file=None):
     total_dataset = train_dataset + test_dataset
     total_dataset = prep.eliminate_noise(total_dataset, "，。\t  “”；")
     seg_dataset = prep.seg_words(total_dataset)
-    vec_dataset = prep.word_to_vec(seg_dataset, output_path="./dataset/word2vec.model")
+    if model_file == None:
+        prep.train_word2vec_model(seg_dataset, output_path="./dataset/word2vec.model")
+        model_file = "./dataset/word2vec.model"
+    vec_dataset = prep.word_to_vec(seg_dataset, input_path=model_file)
 
     vec_train_dataset = vec_dataset[0:len(test_dataset)]
     vec_test_dataset = vec_dataset[len(test_dataset):]

@@ -48,8 +48,8 @@ def load_raw_data(output_path=None):
 
     #load test data
     for line in test_data:
-        sentence = line.split(" ", 1)
-        test_dataset.append(sentence)
+        sentence = line.split("\t", 1)
+        test_dataset.append(sentence[1])
 
     data_file.close()
     test_file.close()
@@ -88,16 +88,14 @@ def seg_words(dataset, output_path=None):
 
     return new_dataset
 
-def word_to_vec(seg_dataset, input_path=None, output_path=None):
-    # load or train the model
-    if input_path == None:
-        model = Word2Vec(seg_dataset, workers=4, window=4, size=100, min_count=0, sg=0, hs=0)
-    else:
-        model = Word2Vec.load(input_path)
+def train_word2vec_model(seg_dataset, output_path):
+    model = Word2Vec(seg_dataset, workers=4, window=4, size=100, min_count=0, sg=0, hs=0)
+    model.save(output_path)
+    print("Training of Word2Vec model finished, saved to %s" % output_path)
 
-    # check whether to save the model
-    if output_path != None:
-        model.save(output_path)
+def word_to_vec(seg_dataset, input_path):
+    # load the model
+    model = Word2Vec.load(input_path)
 
     #compute the max length of each sentence
     max_len = 0
@@ -122,8 +120,9 @@ def word_to_vec(seg_dataset, input_path=None, output_path=None):
 if __name__ == "__main__":
     dataset, labels, test_dataset, class_num = load_raw_data()
 
-    dataset = eliminate_noise(dataset, "，。\t  “”；")
+    total_dataset = eliminate_noise(dataset + test_dataset, "，。\t  “”；")
 
-    seg_dataset = seg_words(dataset)
+    seg_dataset = seg_words(total_dataset)
 
-    vec_dataset = word_to_vec(seg_dataset, output_path="./dataset/word2vec.model")
+    train_word2vec_model(seg_dataset, output_path="./dataset/word2vec.model")
+    vec_dataset = word_to_vec(seg_dataset, input_path="./dataset/word2vec.model")
