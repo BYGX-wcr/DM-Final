@@ -2,9 +2,9 @@
 
 import numpy as np
 from sklearn.naive_bayes import MultinomialNB
-from sklearn.metrics import precision_score, recall_score, f1_score
 
 import preprocess as prep
+import summary as summary
 
 def train_MulNB(data, labels, class_prior=None):
     mnb = MultinomialNB(alpha=2.0, fit_prior=True, class_prior=class_prior)
@@ -42,11 +42,15 @@ def experiment(train_dataset, test_dataset, train_labels, test_labels=None, mode
 if __name__ == "__main__":
     dataset, labels, test_dataset, class_num = prep.load_raw_data()
 
-    train_dataset = dataset[1:700000]
-    predict_dataset = dataset[700000:]
-    train_labels = labels[1:700000]
-    predict_labels = labels[700000:]
+    # train_dataset = dataset[1:700000]
+    # predict_dataset = dataset[700000:]
+    # train_labels = labels[1:700000]
+    # predict_labels = labels[700000:]
+    train_dataset = dataset
+    predict_dataset = test_dataset
+    train_labels = labels
+    predict_labels = None
+    model_file = "./dataset/all_word2vec.model"
 
-    res = experiment(train_dataset, predict_dataset, train_labels, predict_labels, model_file="./dataset/word2vec.model")
-    f1score = f1_score(predict_labels, res, average=None)
-    print('f1 score: {0}'.format(f1score))
+    res = experiment(train_dataset, predict_dataset, train_labels, predict_labels, model_file="./dataset/all_word2vec.model")
+    summary.save_result(res, "./dataset/submission1")
