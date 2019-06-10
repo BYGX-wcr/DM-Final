@@ -86,6 +86,17 @@ def seg_words(dataset, output_path=None):
 
     return new_dataset
 
+def max_min_normalize(dataset, max, min):
+    dataset = np.array(dataset)
+    minv = dataset.min(axis=0)
+    maxv = dataset.max(axis=0)
+
+    for row in np.nditer(dataset, op_flags=['readwrite']):
+        for col in np.nditer(row, op_flags=['readwrite']):
+            col[...] = ((col - minv[col]) / (maxv[col] - minv[col])) * (max - min) + min
+
+    return dataset
+
 def train_word2vec_model(seg_dataset, output_path):
     model = Word2Vec(seg_dataset, workers=4, window=4, size=100, min_count=0, sg=0, hs=0)
     model.save(output_path)
