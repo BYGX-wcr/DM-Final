@@ -27,7 +27,7 @@ def experiment(train_dataset, test_dataset, train_labels, test_labels=None, mode
         prep.train_word2vec_model(seg_dataset, output_path="./dataset/word2vec.model")
         model_file = "./dataset/word2vec.model"
     vec_dataset = prep.word_to_vec(seg_dataset, input_path=model_file)
-    vec_dataset = prep.max_min_normalize(vec_dataset, max=1, min=0)
+    vec_dataset = prep.max_min_normalize(vec_dataset, max=10, min=0)
 
     vec_train_dataset = vec_dataset[0:len(train_dataset)]
     vec_test_dataset = vec_dataset[len(train_dataset):]
