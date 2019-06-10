@@ -6,10 +6,10 @@ def print_f1_score(y_true, y_pred):
 
 def save_result(res, output_path):
     output_file = open(output_path, 'w', encoding='utf-8')
-    output_file.write('ID,Expected')
+    output_file.write('ID,Expected\n')
 
     for index in range(len(res)):
-        output_file.write('{0},{1}'.format(index,res[index]))
+        output_file.write('{0},{1}\n'.format(index,res[index]))
 
     output_file.close()
-    print("Result saved to {}".format(output_path))
+    print("Result saved to {}\n".format(output_path))
