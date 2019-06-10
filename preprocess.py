@@ -75,7 +75,8 @@ def eliminate_noise(dataset, noise_set):
             sentence = sentence.replace(char, "")
         
         new_dataset.append(sentence)
-    
+
+    print("Eliminating noise finished!")    
     return new_dataset
 
 def seg_words(dataset, output_path=None):
@@ -84,6 +85,7 @@ def seg_words(dataset, output_path=None):
         words = list(jieba.cut(instance))
         new_dataset.append(words)
 
+    print("Segmenting words finished!")
     return new_dataset
 
 def max_min_normalize(dataset, max, min):
@@ -91,10 +93,18 @@ def max_min_normalize(dataset, max, min):
     minv = dataset.min(axis=0)
     maxv = dataset.max(axis=0)
 
-    for row in np.nditer(dataset, op_flags=['readwrite']):
-        for col in np.nditer(row, op_flags=['readwrite']):
-            col[...] = ((col - minv[col]) / (maxv[col] - minv[col])) * (max - min) + min
+    for row in dataset:
+        for colno in range(len(row)):
+            col = row[colno]
+            temp = col
+            col = ((col - minv[colno]) / (maxv[colno] - minv[colno])) * (max - min) + min
+            if col < min or col > max:
+                print("Normalization Error!")
+                print(str(temp) + ',' + str(col) + ',' + str(minv[colno]) + ',' + str(maxv[colno]))
+                exit()
+            row[colno] = col
 
+    print("Max min normalization finished!")
     return dataset
 
 def train_word2vec_model(seg_dataset, output_path):
