@@ -2,6 +2,8 @@
 
 import jieba
 from gensim.models import Word2Vec
+from gensim.models import TfidfModel
+from gensim.corpora import Dictionary
 import numpy as np
 
 '''
@@ -137,6 +139,41 @@ def word_to_vec(seg_dataset, input_path):
         new_dataset.append(word_vec)
 
     print("Word2vec preprocess finished!")
+    return new_dataset
+
+def word_to_vec_highdim(seg_dataset, input_path):
+    # load the model
+    model = Word2Vec.load(input_path)
+
+    max_len = -1
+    for sentence in seg_dataset:
+        max_len = max(len(sentence), max_len)
+
+    #construct new dataset
+    new_dataset = []
+    for sentence in seg_dataset:
+        #construct the word vectors for a sentence, supplement missing tails
+        word_vec = []
+        counter = 0
+        for word in sentence:
+            word_vec = word_vec + list(model.wv[word])
+            counter = counter + 1
+
+        word_vec.append([0]*(100 * (max_len - counter)))
+        new_dataset.append(np.array(word_vec))
+
+    print("Word2vec preprocess finished!")
+    return new_dataset
+
+def tfidf(seg_dataset):
+    new_dataset = []
+    task_dict = Dictionary(seg_dataset)
+    corpus = [task_dict.doc2bow(line) for line in seg_dataset]
+    model = TfidfModel(corpus)
+    for sentence in seg_dataset:
+        new_dataset.append(model[sentence])
+
+    print("TfIdf preprocess finished!")
     return new_dataset
 
 if __name__ == "__main__":

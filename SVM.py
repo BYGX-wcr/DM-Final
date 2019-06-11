@@ -25,7 +25,7 @@ def experiment(train_dataset, test_dataset, train_labels, test_labels=None, mode
     if model_file == None:
         prep.train_word2vec_model(seg_dataset, output_path="./dataset/word2vec.model")
         model_file = "./dataset/word2vec.model"
-    vec_dataset = prep.word_to_vec(seg_dataset, input_path=model_file)
+    vec_dataset = prep.word_to_vec_highdim(seg_dataset, input_path=model_file)
 
     vec_train_dataset = vec_dataset[0:len(train_dataset)]
     vec_test_dataset = vec_dataset[len(train_dataset):]
@@ -51,4 +51,4 @@ if __name__ == "__main__":
     model_file = "./dataset/all_word2vec.model"
 
     res = experiment(train_dataset, predict_dataset, train_labels, predict_labels, model_file="./dataset/all_word2vec.model")
-    summary.save_result(res, "./dataset/submission4.csv")
+    summary.save_result(res, "./dataset/submission6.csv")
