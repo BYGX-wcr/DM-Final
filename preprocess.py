@@ -5,6 +5,7 @@ from gensim.models import Word2Vec
 from gensim.models import TfidfModel
 from gensim.corpora import Dictionary
 import numpy as np
+import scipy as sp
 
 '''
 The python script used to load and preprocess dataset
@@ -159,22 +160,33 @@ def word_to_vec_highdim(seg_dataset, input_path):
             word_vec = word_vec + list(model.wv[word])
             counter = counter + 1
 
-        word_vec.append([0]*(100 * (max_len - counter)))
+        if counter < max_len:
+            word_vec = word_vec + [0]*(100 * (max_len - counter))
         new_dataset.append(np.array(word_vec))
 
     print("Word2vec preprocess finished!")
     return new_dataset
 
 def tfidf(seg_dataset):
-    new_dataset = []
     task_dict = Dictionary(seg_dataset)
     corpus = [task_dict.doc2bow(line) for line in seg_dataset]
     model = TfidfModel(corpus)
+
+    data = []
+    indices = []
+    indptr = []
+    counter = 0
     for sentence in corpus:
-        new_dataset.append(model[sentence])
+        sparse_vec = model[sentence]
+        indptr.append(len(data))
+        for i in range(len(sparse_vec)):
+            indices.append(sparse_vec[i][0])
+            data.append(sparse_vec[i][1])
+        counter += 1
+    indptr.append(len(data))
 
     print("TfIdf preprocess finished!")
-    return new_dataset
+    return sp.sparse.csr_matrix((data, indices, indptr)).toarray()
 
 if __name__ == "__main__":
     dataset, labels, test_dataset, class_num = load_raw_data()
