@@ -5,6 +5,7 @@ from gensim.models import Word2Vec
 from gensim.models import TfidfModel
 from gensim.corpora import Dictionary
 import numpy as np
+import scipy as sp
 
 '''
 The python script used to load and preprocess dataset
@@ -185,7 +186,7 @@ def tfidf(seg_dataset):
     indptr.append(len(data))
 
     print("TfIdf preprocess finished!")
-    return data, indices, indptr
+    return sp.sparse.csr_matrix((data, indices, indptr))
 
 if __name__ == "__main__":
     dataset, labels, test_dataset, class_num = load_raw_data()
