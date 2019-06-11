@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 
 import numpy as np
+import scipy as sp
 from sklearn.naive_bayes import MultinomialNB
 
 import preprocess as prep
@@ -43,10 +44,10 @@ def experiment_tfidf(train_dataset, test_dataset, train_labels, test_labels=None
     total_dataset = train_dataset + test_dataset
     seg_dataset = prep.seg_words(total_dataset)
     seg_dataset = prep.eliminate_noise(seg_dataset, "，。、\t “”；")
-    vec_dataset = prep.tfidf(seg_dataset)
+    data, indices, indptr = prep.tfidf(seg_dataset)
 
-    vec_train_dataset = vec_dataset[0:len(train_dataset)]
-    vec_test_dataset = vec_dataset[len(train_dataset):]
+    vec_train_dataset = sp.sparse.csr_matrix((data[indptr[0]:indptr[len(train_dataset)]], indices[indptr[0]:indptr[len(train_dataset)]], indptr[0:len(train_dataset)]))
+    vec_test_dataset = sp.sparse.csr_matrix((data[indptr[len(train_dataset)]:], indices[indptr[len(train_dataset)]:], indptr[indptr[len(train_dataset)]:]), shape=vec_train_dataset.shape)
 
     MulNB_model = train_MulNB(vec_train_dataset, train_labels)
     res = predict_MulNB(vec_test_dataset, MulNB_model)
