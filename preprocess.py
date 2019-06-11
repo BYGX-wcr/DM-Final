@@ -170,7 +170,7 @@ def tfidf(seg_dataset):
     task_dict = Dictionary(seg_dataset)
     corpus = [task_dict.doc2bow(line) for line in seg_dataset]
     model = TfidfModel(corpus)
-    for sentence in seg_dataset:
+    for sentence in corpus:
         new_dataset.append(model[sentence])
 
     print("TfIdf preprocess finished!")
