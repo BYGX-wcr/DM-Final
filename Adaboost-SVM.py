@@ -1,22 +1,22 @@
 # -*- coding:utf-8 -*-
 
+from sklearn.svm import LinearSVC
+from sklearn.ensemble import AdaBoostClassifier
 import numpy as np
-from sklearn.naive_bayes import MultinomialNB
 
 import preprocess as prep
 import summary as summary
 
-def train_MulNB(data, labels, class_prior=None):
-    mnb = MultinomialNB(alpha=2.0, fit_prior=True, class_prior=class_prior)
-    mnb.fit(data, labels)
+def train_AdaSVM(data, labels):
+    ada_svm = AdaBoostClassifier(base_estimator=LinearSVC(dual=False),n_estimators=20)
+    ada_svm.fit(data, labels)
 
-    print("Training of MultinomialNB model finished!")
-    return mnb
+    return ada_svm
 
-def predict_MulNB(data, model):
+def predict_AdaSVM(data, model):
     return model.predict(data)
 
-def score_MulNB(data, labels, model):
+def score_AdaSVM(data, labels, model):
     return model.score(data, labels)
 
 def experiment(train_dataset, test_dataset, train_labels, test_labels=None, model_file=None):
@@ -27,15 +27,14 @@ def experiment(train_dataset, test_dataset, train_labels, test_labels=None, mode
         prep.train_word2vec_model(seg_dataset, output_path="./dataset/word2vec.model")
         model_file = "./dataset/word2vec.model"
     vec_dataset = prep.word_to_vec(seg_dataset, input_path=model_file)
-    vec_dataset = prep.max_min_normalize(vec_dataset, max=10, min=0)
 
     vec_train_dataset = vec_dataset[0:len(train_dataset)]
     vec_test_dataset = vec_dataset[len(train_dataset):]
 
-    MulNB_model = train_MulNB(vec_train_dataset, train_labels)
-    res = predict_MulNB(vec_test_dataset, MulNB_model)
+    AdaSVM_model = train_AdaSVM(vec_train_dataset, train_labels)
+    res = predict_AdaSVM(vec_test_dataset, AdaSVM_model)
     if test_labels != None:
-        print("accuracy: {0}".format(score_MulNB(vec_test_dataset, test_labels, MulNB_model)))
+        print("accuracy: {0}".format(score_AdaSVM(vec_test_dataset, test_labels, AdaSVM_model)))
 
     return res
 
@@ -53,4 +52,4 @@ if __name__ == "__main__":
     model_file = "./dataset/all_word2vec.model"
 
     res = experiment(train_dataset, predict_dataset, train_labels, predict_labels, model_file="./dataset/all_word2vec.model")
-    summary.save_result(res, "./dataset/submission1.csv")
+    summary.save_result(res, "./dataset/submission4.csv")

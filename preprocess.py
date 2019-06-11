@@ -68,13 +68,18 @@ def class_statistic(labels, class_num):
 
     return counters
 
-def eliminate_noise(dataset, noise_set):
+def eliminate_noise(seg_dataset, noise_set):
     new_dataset = []
-    for sentence in dataset:
-        for char in noise_set:
-            sentence = sentence.replace(char, "")
+    for sentence in seg_dataset:
+        new_sentence = []
+        for word in sentence:
+            for char in noise_set:
+                word = word.replace(char, "")
+
+            if len(word) != 0:
+                new_sentence.append(word)
         
-        new_dataset.append(sentence)
+        new_dataset.append(new_sentence)
 
     print("Eliminating noise finished!")    
     return new_dataset
@@ -131,14 +136,16 @@ def word_to_vec(seg_dataset, input_path):
                 x[...] = x / counter
         new_dataset.append(word_vec)
 
+    print("Word2vec preprocess finished!")
     return new_dataset
 
 if __name__ == "__main__":
     dataset, labels, test_dataset, class_num = load_raw_data()
 
-    total_dataset = eliminate_noise(dataset + test_dataset, "，。\t “”；")
+    total_dataset = dataset + test_dataset
 
     seg_dataset = seg_words(total_dataset)
 
+    seg_dataset = eliminate_noise(seg_dataset, "，。、\t “”；")
+
     train_word2vec_model(seg_dataset, output_path="./dataset/all_word2vec.model")
-    #vec_dataset = word_to_vec(seg_dataset, input_path="./dataset/word2vec.model")

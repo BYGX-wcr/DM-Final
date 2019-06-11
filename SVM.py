@@ -20,8 +20,8 @@ def score_SVM(data, labels, model):
 
 def experiment(train_dataset, test_dataset, train_labels, test_labels=None, model_file=None):
     total_dataset = train_dataset + test_dataset
-    total_dataset = prep.eliminate_noise(total_dataset, "，。\t “”；")
     seg_dataset = prep.seg_words(total_dataset)
+    seg_dataset = prep.eliminate_noise(seg_dataset, "，。、\t “”；")
     if model_file == None:
         prep.train_word2vec_model(seg_dataset, output_path="./dataset/word2vec.model")
         model_file = "./dataset/word2vec.model"
@@ -51,4 +51,4 @@ if __name__ == "__main__":
     model_file = "./dataset/all_word2vec.model"
 
     res = experiment(train_dataset, predict_dataset, train_labels, predict_labels, model_file="./dataset/all_word2vec.model")
-    summary.save_result(res, "./dataset/submission3.csv")
+    summary.save_result(res, "./dataset/submission4.csv")
