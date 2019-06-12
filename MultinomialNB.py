@@ -8,7 +8,7 @@ import preprocess as prep
 import summary as summary
 
 def train_MulNB(data, labels, class_prior=None):
-    mnb = MultinomialNB(alpha=2.0, fit_prior=True, class_prior=class_prior)
+    mnb = MultinomialNB(alpha=2.0, fit_prior=False, class_prior=class_prior)
     mnb.fit(data, labels)
 
     print("Training of MultinomialNB model finished!")
@@ -70,4 +70,4 @@ if __name__ == "__main__":
     model_file = "./dataset/all_word2vec.model"
 
     res = experiment_tfidf(train_dataset, predict_dataset, train_labels, predict_labels)
-    summary.save_result(res, "./dataset/submission5.csv")
+    summary.save_result(res, "./dataset/submission8.csv")
