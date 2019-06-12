@@ -8,7 +8,7 @@ import preprocess as prep
 import summary as summary
 
 def train_AdaSVM(data, labels):
-    ada_svm = AdaBoostClassifier(base_estimator=LinearSVC(dual=False),n_estimators=20)
+    ada_svm = AdaBoostClassifier(base_estimator=LinearSVC(dual=False),n_estimators=60, algorithm='SAMME')
     ada_svm.fit(data, labels)
 
     return ada_svm
@@ -52,4 +52,4 @@ if __name__ == "__main__":
     model_file = "./dataset/all_word2vec.model"
 
     res = experiment(train_dataset, predict_dataset, train_labels, predict_labels, model_file="./dataset/all_word2vec.model")
-    summary.save_result(res, "./dataset/submission4.csv")
+    summary.save_result(res, "./dataset/submission7.csv")
