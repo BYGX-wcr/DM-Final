@@ -2,7 +2,10 @@
 
 import jieba
 from gensim.models import Word2Vec
+from gensim.models import TfidfModel
+from gensim.corpora import Dictionary
 import numpy as np
+import scipy as sp
 
 '''
 The python script used to load and preprocess dataset
@@ -138,6 +141,52 @@ def word_to_vec(seg_dataset, input_path):
 
     print("Word2vec preprocess finished!")
     return new_dataset
+
+def word_to_vec_highdim(seg_dataset, input_path):
+    # load the model
+    model = Word2Vec.load(input_path)
+
+    max_len = -1
+    for sentence in seg_dataset:
+        max_len = max(len(sentence), max_len)
+
+    #construct new dataset
+    new_dataset = []
+    for sentence in seg_dataset:
+        #construct the word vectors for a sentence, supplement missing tails
+        word_vec = []
+        counter = 0
+        for word in sentence:
+            word_vec = word_vec + list(model.wv[word])
+            counter = counter + 1
+
+        if counter < max_len:
+            word_vec = word_vec + [0]*(100 * (max_len - counter))
+        new_dataset.append(np.array(word_vec))
+
+    print("Word2vec preprocess finished!")
+    return new_dataset
+
+def tfidf(seg_dataset):
+    task_dict = Dictionary(seg_dataset)
+    corpus = [task_dict.doc2bow(line) for line in seg_dataset]
+    model = TfidfModel(corpus)
+
+    data = []
+    indices = []
+    indptr = []
+    counter = 0
+    for sentence in corpus:
+        sparse_vec = model[sentence]
+        indptr.append(len(data))
+        for i in range(len(sparse_vec)):
+            indices.append(sparse_vec[i][0])
+            data.append(sparse_vec[i][1])
+        counter += 1
+    indptr.append(len(data))
+
+    print("TfIdf preprocess finished!")
+    return sp.sparse.csr_matrix((data, indices, indptr))
 
 if __name__ == "__main__":
     dataset, labels, test_dataset, class_num = load_raw_data()
