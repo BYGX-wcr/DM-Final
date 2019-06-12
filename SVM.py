@@ -37,6 +37,22 @@ def experiment(train_dataset, test_dataset, train_labels, test_labels=None, mode
 
     return res
 
+def experiment_tfidf(train_dataset, test_dataset, train_labels, test_labels=None):
+    total_dataset = train_dataset + test_dataset
+    seg_dataset = prep.seg_words(total_dataset)
+    seg_dataset = prep.eliminate_noise(seg_dataset, "，。、\t “”；")
+    vec_dataset = prep.tfidf(seg_dataset)
+
+    vec_train_dataset = vec_dataset[0:len(train_dataset)]
+    vec_test_dataset = vec_dataset[len(train_dataset):]
+
+    SVM_model = train_SVM(vec_train_dataset, train_labels)
+    res = predict_SVM(vec_test_dataset, SVM_model)
+    if test_labels != None:
+        print("accuracy: {0}".format(score_SVM(vec_test_dataset, test_labels, SVM_model)))
+
+    return res
+
 if __name__ == "__main__":
     dataset, labels, test_dataset, class_num = prep.load_raw_data()
 
@@ -50,5 +66,5 @@ if __name__ == "__main__":
     predict_labels = None
     model_file = "./dataset/all_word2vec.model"
 
-    res = experiment(train_dataset, predict_dataset, train_labels, predict_labels, model_file="./dataset/all_word2vec.model")
+    res = experiment_tfidf(train_dataset, predict_dataset, train_labels, predict_labels)
     summary.save_result(res, "./dataset/submission9.csv")
