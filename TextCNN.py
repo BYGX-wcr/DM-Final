@@ -16,8 +16,12 @@ def textcnn(train_dataset, test_dataset, train_labels, model_file=None, output_p
     vec_dim = 100
 
     # Input layer
-    x_input = Input(shape=(vec_dim,))
-    print("x_input.shape: %s" % str(x_input.shape))  # (?, 60)
+    x_input = Input(shape=(1, vec_dim, ))
+    # print("x_input.shape: %s" % str(x_input.shape))  # (?, 60)
+
+    # # Embedding layer
+    # x_emb = Embedding(input_dim=vec_dim, output_dim=vec_dim, input_length=vec_dim)(x_input)
+    # print("x_emb.shape: %s" % str(x_emb.shape))  # (?, 60, 300)
 
     # Conv & MaxPool layer
     pool_output = []
