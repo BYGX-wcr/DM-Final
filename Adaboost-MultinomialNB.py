@@ -9,7 +9,7 @@ import preprocess as prep
 import summary as summary
 
 def train_AdaMulNB(data, labels):
-    ada_mnb = AdaBoostClassifier(base_estimator=MultinomialNB(alpha=2.0, fit_prior=False), n_estimators=60, algorithm='SAMME.R')
+    ada_mnb = AdaBoostClassifier(base_estimator=MultinomialNB(alpha=2.0, fit_prior=False), n_estimators=10, algorithm='SAMME.R')
     ada_mnb.fit(data, labels)
 
     return ada_mnb
@@ -45,4 +45,4 @@ if __name__ == "__main__":
     predict_labels = None
 
     res = experiment(train_dataset, predict_dataset, train_labels, predict_labels)
-    summary.save_result(res, "./dataset/submission9.csv")
+    summary.save_result(res, "./dataset/submission10.csv")

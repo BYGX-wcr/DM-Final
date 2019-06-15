@@ -4,6 +4,7 @@
 import preprocess as prep
 import summary
 
+from keras import Input
 from keras.layers import Conv1D, MaxPool1D, Dense, Flatten, concatenate, Embedding
 from keras.models import Model
 from keras.optimizers import SGD
@@ -16,8 +17,8 @@ def textcnn(train_dataset, test_dataset, train_labels, model_file=None, output_p
     vec_dim = 100
 
     # Input layer
-    x_input = Input(shape=(1, vec_dim, ))
-    # print("x_input.shape: %s" % str(x_input.shape))  # (?, 60)
+    x_input = Input(shape=(vec_dim, 1, ))
+    print("x_input.shape: %s" % str(x_input.shape))  # (?, 60)
 
     # # Embedding layer
     # x_emb = Embedding(input_dim=vec_dim, output_dim=vec_dim, input_length=vec_dim)(x_input)
@@ -55,9 +56,10 @@ def textcnn(train_dataset, test_dataset, train_labels, model_file=None, output_p
     vec_train_dataset = vec_dataset[0:len(train_dataset)]
     vec_test_dataset = vec_dataset[len(train_dataset):]
     
-    sgd = SGD(l2=0.0,lr=0.05, decay=1e-6, momentum=0.9, nesterov=True)
+    sgd = SGD(lr=0.05, decay=1e-6, momentum=0.9, nesterov=True)
     model.compile(optimizer=sgd, loss='categorical_crossentropy', metrics=['accuracy'])
-    model.fit(vec_train_dataset, train_labels, batch_size=100, nb_epoch=10, shuffle=True, verbose=1, show_accuracy=True, validation_split=0.2)
+    for i in range(len(vec_train_dataset)):
+        model.fit(vec_train_dataset[i], train_labels[i], batch_size=100, epochs=10, shuffle=True, verbose=1, validation_split=0.2)
     res = model.predict(vec_test_dataset, batch_size=100)
     return res
 
