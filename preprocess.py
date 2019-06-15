@@ -142,13 +142,21 @@ def word_to_vec(seg_dataset, input_path):
     print("Word2vec preprocess finished!")
     return new_dataset
 
-def word_to_vec_highdim(seg_dataset, input_path):
-    # load the model
+def word_to_vec_highdim(seg_dataset, input_path, vec_len=None):
+    #load the model
     model = Word2Vec.load(input_path)
 
-    max_len = -1
-    for sentence in seg_dataset:
-        max_len = max(len(sentence), max_len)
+    #learn the vector length  
+    if vec_len == None:
+        len_array = [len(x) for x in seg_dataset]
+
+        len_array.sort()
+        Q1 = 0.25
+        Q2 = 0.5
+        Q3 = 0.75
+
+        vec_len = int(len_array[int(Q2 * len(len_array))] + (len_array[int(Q3 * len(len_array))] - len_array[int(Q2 * len(len_array))]) * 1.5)
+    print("Dimension of word vector: {0}".format(vec_len * 100))
 
     #construct new dataset
     new_dataset = []
@@ -159,9 +167,11 @@ def word_to_vec_highdim(seg_dataset, input_path):
         for word in sentence:
             word_vec = word_vec + list(model.wv[word])
             counter = counter + 1
+            if (vec_len == counter):
+                break
 
-        if counter < max_len:
-            word_vec = word_vec + [0]*(100 * (max_len - counter))
+        if counter < vec_len:
+            word_vec = word_vec + [0]*(100 * (vec_len - counter))
         new_dataset.append(np.array(word_vec))
 
     print("Word2vec preprocess finished!")
