@@ -140,7 +140,7 @@ def word_to_vec(seg_dataset, input_path):
         new_dataset.append(word_vec)
 
     print("Word2vec preprocess finished!")
-    return new_dataset
+    return new_dataset, 100
 
 def word_to_vec_highdim(seg_dataset, input_path, vec_len=None):
     #load the model
@@ -175,7 +175,7 @@ def word_to_vec_highdim(seg_dataset, input_path, vec_len=None):
         new_dataset.append(np.array(word_vec))
 
     print("Word2vec preprocess finished!")
-    return new_dataset
+    return new_dataset, vec_len * 100
 
 def tfidf(seg_dataset):
     task_dict = Dictionary(seg_dataset)
