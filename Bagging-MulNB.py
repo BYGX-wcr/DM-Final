@@ -9,7 +9,7 @@ import preprocess as prep
 import summary as summary
 
 def train_BagMulNB(data, labels):
-    bag_mnb = BaggingClassifier(base_estimator=MultinomialNB(alpha=2.0, fit_prior=False), n_estimators=10)
+    bag_mnb = BaggingClassifier(base_estimator=MultinomialNB(alpha=2.0, fit_prior=False), n_estimators=30)
     bag_mnb.fit(data, labels)
 
     return bag_mnb
@@ -45,4 +45,4 @@ if __name__ == "__main__":
     predict_labels = None
 
     res = experiment(train_dataset, predict_dataset, train_labels, predict_labels)
-    summary.save_result(res, "./dataset/submission12.csv")
+    summary.save_result(res, "./dataset/submission13.csv")

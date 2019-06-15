@@ -66,5 +66,5 @@ if __name__ == "__main__":
     predict_labels = None
     model_file = "./dataset/all_word2vec.model"
 
-    res = experiment(train_dataset, predict_dataset, train_labels, predict_labels, model_file=model_file)
-    summary.save_result(res, "./dataset/submission6.csv")
+    res = experiment_tfidf(train_dataset, predict_dataset, train_labels, predict_labels)
+    summary.save_result(res, "./dataset/submission14.csv")

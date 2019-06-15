@@ -13,7 +13,7 @@ import summary as summary
 def train_EnsClf(data, labels):
     clf1 = MultinomialNB(alpha=2.0, fit_prior=False)
     clf2 = LinearSVC(dual=False)
-    clf3 = LogisticRegression(solver='lbfgs', multi_class='multinomial', random_state=1)
+    clf3 = LogisticRegression(solver='sag', multi_class='multinomial', random_state=1)
     clf4 = RidgeClassifier(alpha=0.5, copy_X=True, fit_intercept=True, max_iter=None, normalize=False, random_state=1, solver='auto', tol=0.001)
     vc = VotingClassifier(estimators=[('mnb', clf1), ('svm', clf2), ('lr', clf3), ('rc', clf4)], voting='soft')
     vc.fit(data, labels)
