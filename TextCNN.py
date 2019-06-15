@@ -1,5 +1,6 @@
 import logging
 import preprocess as prep
+import summary
 
 from keras.layers import Conv1D, MaxPool1D, Dense, Flatten, concatenate, Embedding
 from keras.models import Model
@@ -7,7 +8,7 @@ from keras.optimizers import SGD
 from keras.utils import plot_model
 
 
-def textcnn(train_dataset, test_dataset, train_labels, class_num, model_file=None, output_path=None):
+def textcnn(train_dataset, test_dataset, train_labels, model_file=None, output_path=None):
     """ TextCNN: 1. embedding, 2.convolution layer, 3.max-pooling, 4.softmax layer. """
 
     total_dataset = train_dataset + test_dataset
@@ -51,3 +52,19 @@ def textcnn(train_dataset, test_dataset, train_labels, class_num, model_file=Non
     model.fit(vec_train_dataset, train_labels, batch_size=100, nb_epoch=10, shuffle=True, verbose=1, show_accuracy=True, validation_split=0.2)
     res = model.predict(vec_test_dataset, batch_size=100)
     return res
+
+if __name__ == "__main__":
+    dataset, labels, test_dataset, class_num = prep.load_raw_data()
+
+    # train_dataset = dataset[1:700000]
+    # predict_dataset = dataset[700000:]
+    # train_labels = labels[1:700000]
+    # predict_labels = labels[700000:]
+    train_dataset = dataset
+    predict_dataset = test_dataset
+    train_labels = labels
+    predict_labels = None
+    model_file = "./dataset/all_word2vec.model"
+
+    res = textcnn(train_dataset, predict_dataset, train_labels, model_file=model_file)
+    summary.save_result(res, "./dataset/submission12.csv")
